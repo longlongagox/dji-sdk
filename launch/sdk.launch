@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
+    <!--dji sdk -->
     <node pkg="dji_sdk" type="dji_sdk_node" name="dji_sdk" output="screen">
         <param name="serial_name" type="string" value="/dev/ttyTHS1"/>
         <param name="baud_rate" type="int" value="230400"/>
@@ -9,5 +10,32 @@
         <param name="enc_key" type="string" value="167c1024d67569863446fa7f4ea66fad1d3e88286a4e836c420476310525fa73"/>
         <param name="use_broadcast" type="bool" value="false"/>
     </node>
+
+    <!-- tf -->
     <node pkg="dji_sdk_tf" type="dji_sdk_tf_node" name="dji_sdk_tf_node" output="screen" />
+    
+    <!-- camera -->
+    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
+        <param name="video_device" value="/dev/video0" />
+        <param name="image_width" value="640" />
+        <param name="image_height" value="480" />
+        <param name="pixel_format" value="yuyv" />
+        <param name="camera_frame_id" value="usb_cam" />
+        <param name="io_method" value="mmap"/>
+    </node>
+
+    <!-- simple flow -->
+
+    <arg name="image" default="/usb_cam/image_raw"/>
+    <arg name="use_camera_info" default="/usb_cam/camera_info" />
+    <arg name="debug_view" default="false"/>
+    <arg name="scale" default="16"/>
+
+  <!-- simple_flow.cpp -->
+    <node name="simple_flow" pkg="opencv_apps" type="simple_flow" >
+        <remap from="image" to="$(arg image)" />
+        <param name="use_camera_info" value="$(arg use_camera_info)" />
+        <param name="debug_view" value="$(arg debug_view)" />
+        <param name="scale" value="$(arg scale)" />
+    </node>
 </launch>
