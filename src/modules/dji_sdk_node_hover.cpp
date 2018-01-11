@@ -34,9 +34,7 @@ void *run(void * arg) {
 	pthread_detach(pthread_self());
 	DJISDKNode* node = (DJISDKNode*)arg;
 	while(1) {
-		ROS_INFO(last_inst);
-		ROS_INFO(ros::Time::now());
-		ROS_INFO("--------");
+		ROS_INFO("last: %f, now: %f", last_inst.toSec(), ros::Time::now().toSec());
 		if (ros::Time::now() - last_inst > ros::Duration(2)) {
 			ROS_INFO("hover %d, %d", xx, yy);
 
