@@ -44,6 +44,7 @@ void *run(void * arg) {
 }
 void DJISDKNode::hover(ros::NodeHandle& nh) {
 	last_inst = ros::Time::now();
+	ROS_INFO("set last %s", __func__);
 	flows = nh.subscribe<opencv_apps::FlowArrayStamped>("/fback_flow/flows", 10, &DJISDKNode::flowsCallback, this);
 	pthread_t th;
 	pthread_create(&th, NULL, run, this);

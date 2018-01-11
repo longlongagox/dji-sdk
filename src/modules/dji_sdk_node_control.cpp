@@ -121,6 +121,7 @@ DJISDKNode::flightControlSetpointCallback(
   const sensor_msgs::Joy::ConstPtr& pMsg)
 { 
   last_inst = ros::Time::now();
+  ROS_INFO("set last %s", __func__);
   float xSP    = pMsg->axes[0];
   float ySP    = pMsg->axes[1];
   float zSP    = pMsg->axes[2];
@@ -135,6 +136,7 @@ DJISDKNode::flightControlPxPyPzYawCallback(
   const sensor_msgs::Joy::ConstPtr& pMsg)
 {
   last_inst = ros::Time::now();
+  ROS_INFO("set last %s", __func__);
   uint8_t flag = (Control::VERTICAL_POSITION |
                   Control::HORIZONTAL_POSITION |
                   Control::YAW_ANGLE |
@@ -154,6 +156,7 @@ DJISDKNode::flightControlVxVyVzYawrateCallback(
   const sensor_msgs::Joy::ConstPtr& pMsg)
 {
   last_inst = ros::Time::now();
+  ROS_INFO("set last %s", __func__);
   uint8_t flag = (Control::VERTICAL_VELOCITY |
                   Control::HORIZONTAL_VELOCITY |
                   Control::YAW_RATE |
@@ -172,6 +175,7 @@ DJISDKNode::flightControlRollPitchPzYawrateCallback(
   const sensor_msgs::Joy::ConstPtr& pMsg)
 {
   last_inst = ros::Time::now();
+  ROS_INFO("set last %s", __func__);
   uint8_t flag = (Control::VERTICAL_POSITION |
                   Control::HORIZONTAL_ANGLE |
                   Control::YAW_RATE |

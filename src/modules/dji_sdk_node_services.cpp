@@ -48,6 +48,7 @@ DJISDKNode::droneArmCallback(dji_sdk::DroneArmControl::Request&  request,
                              dji_sdk::DroneArmControl::Response& response)
 {
   last_inst = ros::Time::now();
+  ROS_INFO("set last %s", __func__);
   ROS_DEBUG("called droneArmCallback");
 
   ACK::ErrorCode ack;
@@ -152,6 +153,7 @@ DJISDKNode::droneTaskCallback(dji_sdk::DroneTaskControl::Request&  request,
                               dji_sdk::DroneTaskControl::Response& response)
 {
   last_inst = ros::Time::now();
+  ROS_INFO("set last %s", __func__);
 
   ROS_DEBUG("called droneTaskCallback");
 

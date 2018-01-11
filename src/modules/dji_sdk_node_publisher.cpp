@@ -52,6 +52,7 @@ DJISDKNode::dataBroadcastCallback()
     rc_publisher.publish(rc_joy);
     if (rc_joy.axes[0] < 0.001 && rc_joy.axes[1] < 0.01) {
       last_inst = ros::Time::now();
+  ROS_INFO("set last %s", __func__);
     }
   }
 
@@ -470,6 +471,7 @@ DJISDKNode::publish50HzData(Vehicle* vehicle, RecvContainer recvFrame,
     p->rc_publisher.publish(rc_joy);
     if (rc_joy.axes[0] < 0.001 && rc_joy.axes[1] < 0.01) {
       last_inst = ros::Time::now();
+  ROS_INFO("set last %s", __func__);
     }
   }
 
