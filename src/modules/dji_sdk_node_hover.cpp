@@ -56,11 +56,24 @@ void *run(void * arg) {
 		    	} else {
 		    		v_cam.setY(1.0);
 		    	}
+
 		    	ROS_INFO("transform.getBasis()");
 		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[0].getX(), transform.getBasis()[0].getY(), transform.getBasis()[0].getZ());
 		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[1].getX(), transform.getBasis()[1].getY(), transform.getBasis()[1].getZ());
 		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[2].getX(), transform.getBasis()[2].getY(), transform.getBasis()[2].getZ());
 		    	ROS_INFO("----------------------------------");
+		    	tf::Matrix3x3 rot;
+		    	rot.setRotation(transform.getRotation());
+		    	ROS_INFO("transform.getRotation()");
+		    	ROS_INFO("%f, %f, %f, %f", transform.getRotation().x(), transform.getRotation().y(),
+		    			 transform.getRotation().z(), transform.getRotation().w());
+		    	ROS_INFO("---------------");
+		    	ROS_INFO("transform.getBasis()");
+		    	ROS_INFO("%f\t%f\t%f", rot[0].getX(), rot[0].getY(), rot[0].getZ());
+		    	ROS_INFO("%f\t%f\t%f", rot[1].getX(), rot[1].getY(), rot[1].getZ());
+		    	ROS_INFO("%f\t%f\t%f", rot[2].getX(), rot[2].getY(), rot[2].getZ());
+		    	ROS_INFO("----------------------------------");
+
 		    	v_cam.setZ(0);
 		    	tf::Vector3 rotation;
 		    	rotation.setX(v_cam.getX()*transform.getBasis()[0].getX()+v_cam.getY()*transform.getBasis()[1].getX()
@@ -78,12 +91,12 @@ void *run(void * arg) {
 				                  Control::YAW_RATE |
 				                  Control::HORIZONTAL_GROUND |
 				                  Control::STABLE_ENABLE);
-					float vx        = rotation.x();
-					float vy        = rotation.y();
-					float vz        = rotation.z();
-					float yawRate   = 0;
+				float vx        = rotation.x();
+				float vy        = rotation.y();
+				float vz        = rotation.z();
+				float yawRate   = 0;
 
-			    	node->flightControl(flag, vx, vy, vz, yawRate);
+			    node->flightControl(flag, vx, vy, vz, yawRate);
 
 		    } catch (tf::TransformException &ex) {
 		    	ROS_ERROR("%s",ex.what());
