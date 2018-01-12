@@ -18,6 +18,8 @@ ros::Subscriber flows;
 int xx, yy;
 const double EPS = 1.0;
 const float velocity = 1.0;
+const int LIMIT = 50;
+
 void DJISDKNode::flowsCallback(const opencv_apps::FlowArrayStamped::ConstPtr& msg) {
 	int size = msg->flow.size();
 	xx = yy = 0;
@@ -45,15 +47,15 @@ void *run(void * arg) {
 			ROS_INFO("hover %d, %d", xx, yy);
 			try{
 		    	listener.lookupTransform("/usb_cam", "/body_FLU", ros::Time(0), transform);
-		    	tf::Vector3 v_cam;
-		    	if (xx > 0) {
+		    	tf::Vector3 v_cam(0, 0, 0);
+		    	if (xx > LIMIT) {
 		    		v_cam.setX(-1.0);
-		    	} else if (xx < 0) {
+		    	} else if (xx < -LIMIT) {
 		    		v_cam.setX(1.0);
 		    	}
-		    	if (yy > 0) {
+		    	if (yy > LIMIT) {
 		    		v_cam.setY(-1.0);
-		    	} else if (yy < 0) {
+		    	} else if (yy < -LIMIT) {
 		    		v_cam.setY(1.0);
 		    	}
 
@@ -79,6 +81,7 @@ void *run(void * arg) {
 		    			+v_cam.getZ()*transform.getBasis()[2].getZ());
 		    	ROS_INFO("velocity_cam: %f, %f, %f", v_cam.x(), v_cam.y(), v_cam.z());
 		    	ROS_INFO("velocity_rotation: %f, %f, %f", rotation.x(), rotation.y(), rotation.z());
+
 		    	uint8_t flag = (Control::VERTICAL_VELOCITY |
 				                  Control::HORIZONTAL_VELOCITY |
 				                  Control::YAW_RATE |
