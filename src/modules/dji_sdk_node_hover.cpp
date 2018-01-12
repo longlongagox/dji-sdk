@@ -44,6 +44,29 @@ void *run(void * arg) {
 		if (ros::Time::now() - last_inst > ros::Duration(2)) {
 			ROS_INFO("hover %d, %d", xx, yy);
 			try{
+		    	listener.lookupTransform("/usb_cam", "/body_FLU", ros::Time(0), transform);
+		    	ROS_INFO("usb_cam --->  body_FLU");
+		    	ROS_INFO("transform.getBasis()");
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[0].getX(), transform.getBasis()[0].getY(), transform.getBasis()[0].getZ());
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[1].getX(), transform.getBasis()[1].getY(), transform.getBasis()[1].getZ());
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[2].getX(), transform.getBasis()[2].getY(), transform.getBasis()[2].getZ());
+		    	ROS_INFO("----------------------------------");
+		    	ROS_INFO("transform.getRotation()");
+		    	ROS_INFO("%f, %f, %f, %f", transform.getRotation().x(), transform.getRotation().y(),
+		    			 transform.getRotation().z(), transform.getRotation().w());
+		    	ROS_INFO("---------------");
+		    	listener.lookupTransform("/body_FLU", "/ground_ENU", ros::Time(0), transform);
+		    	ROS_INFO("body_FLU --->  ground_ENU");
+		    	ROS_INFO("transform.getBasis()");
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[0].getX(), transform.getBasis()[0].getY(), transform.getBasis()[0].getZ());
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[1].getX(), transform.getBasis()[1].getY(), transform.getBasis()[1].getZ());
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[2].getX(), transform.getBasis()[2].getY(), transform.getBasis()[2].getZ());
+		    	ROS_INFO("----------------------------------");
+		    	ROS_INFO("transform.getRotation()");
+		    	ROS_INFO("%f, %f, %f, %f", transform.getRotation().x(), transform.getRotation().y(),
+		    			 transform.getRotation().z(), transform.getRotation().w());
+		    	ROS_INFO("---------------");
+
 		    	listener.lookupTransform("/usb_cam", "/ground_ENU", ros::Time(0), transform);
 		    	tf::Vector3 v_cam;
 		    	if (xx > 0) {
@@ -62,17 +85,10 @@ void *run(void * arg) {
 		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[1].getX(), transform.getBasis()[1].getY(), transform.getBasis()[1].getZ());
 		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[2].getX(), transform.getBasis()[2].getY(), transform.getBasis()[2].getZ());
 		    	ROS_INFO("----------------------------------");
-		    	tf::Matrix3x3 rot;
-		    	rot.setRotation(transform.getRotation());
 		    	ROS_INFO("transform.getRotation()");
 		    	ROS_INFO("%f, %f, %f, %f", transform.getRotation().x(), transform.getRotation().y(),
 		    			 transform.getRotation().z(), transform.getRotation().w());
 		    	ROS_INFO("---------------");
-		    	ROS_INFO("transform.getBasis()");
-		    	ROS_INFO("%f\t%f\t%f", rot[0].getX(), rot[0].getY(), rot[0].getZ());
-		    	ROS_INFO("%f\t%f\t%f", rot[1].getX(), rot[1].getY(), rot[1].getZ());
-		    	ROS_INFO("%f\t%f\t%f", rot[2].getX(), rot[2].getY(), rot[2].getZ());
-		    	ROS_INFO("----------------------------------");
 
 		    	v_cam.setZ(0);
 		    	tf::Vector3 rotation;
