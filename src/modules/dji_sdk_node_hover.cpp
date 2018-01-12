@@ -29,7 +29,7 @@ void DJISDKNode::flowsCallback(const opencv_apps::FlowArrayStamped::ConstPtr& ms
 		}
 		if (msg->flow[i].velocity.y > EPS) {
 			yy++;
-		} else {
+		} else if (msg->flow[i].velocity.y < -EPS) {
 			yy--;
 		}
 	}
