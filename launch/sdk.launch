@@ -31,7 +31,6 @@
     <arg name="debug_view" default="false"/>
     <arg name="scale" default="16"/>
 
-  <!-- simple_flow.cpp -->
     <node name="simple_flow" pkg="opencv_apps" type="simple_flow" >
         <remap from="image" to="$(arg image)" />
         <param name="use_camera_info" value="$(arg use_camera_info)" />

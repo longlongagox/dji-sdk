@@ -56,17 +56,34 @@ void *run(void * arg) {
 		    	} else {
 		    		v_cam.setY(1.0);
 		    	}
-
+		    	ROS_INFO("transform.getBasis()");
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[0].getX(), transform.getBasis()[0].getY(), transform.getBasis()[0].getZ());
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[1].getX(), transform.getBasis()[1].getY(), transform.getBasis()[1].getZ());
+		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[2].getX(), transform.getBasis()[2].getY(), transform.getBasis()[2].getZ());
+		    	ROS_INFO("----------------------------------");
 		    	v_cam.setZ(0);
 		    	tf::Vector3 rotation;
-		    	// rotation.setX(v_cam.getX()*transform.getBasis()[0].getX()+v_cam.getY()*transform.getBasis()[1].getX()
-		    	// 		+v_cam.getZ()*transform.getBasis()[2].getX());
+		    	rotation.setX(v_cam.getX()*transform.getBasis()[0].getX()+v_cam.getY()*transform.getBasis()[1].getX()
+		    			+v_cam.getZ()*transform.getBasis()[2].getX());
 
-		    	// rotation.setY(v_cam.getX()*transform.getBasis()[0].getY()+v_cam.getY()*transform.getBasis()[1].getY()
-		    	// 		+v_cam.getZ()*transform.getBasis()[2].getY());
+		    	rotation.setY(v_cam.getX()*transform.getBasis()[0].getY()+v_cam.getY()*transform.getBasis()[1].getY()
+		    			+v_cam.getZ()*transform.getBasis()[2].getY());
 
-		    	// rotation.setZ(v_cam.getX()*transform.getBasis()[0].getZ()+v_cam.getY()*transform.getBasis()[1].getZ()
-		    	// 		+v_cam.getZ()*transform.getBasis()[2].getZ());
+		    	rotation.setZ(v_cam.getX()*transform.getBasis()[0].getZ()+v_cam.getY()*transform.getBasis()[1].getZ()
+		    			+v_cam.getZ()*transform.getBasis()[2].getZ());
+		    	ROS_INFO("velocity_cam: %f, %f, %f", v_cam.x(), v_cam.y(), v_cam.z());
+		    	ROS_INFO("velocity_rotation: %f, %f, %f", rotation.x(), rotation.y(), rotation.x());
+		    	uint8_t flag = (Control::VERTICAL_VELOCITY |
+				                  Control::HORIZONTAL_VELOCITY |
+				                  Control::YAW_RATE |
+				                  Control::HORIZONTAL_GROUND |
+				                  Control::STABLE_ENABLE);
+					float vx        = rotation.x();
+					float vy        = rotation.y();
+					float vz        = rotation.z();
+					float yawRate   = 0;
+
+			    	node->flightControl(flag, vx, vy, vz, yawRate);
 
 		    } catch (tf::TransformException &ex) {
 		    	ROS_ERROR("%s",ex.what());
