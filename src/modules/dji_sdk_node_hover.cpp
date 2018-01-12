@@ -44,6 +44,7 @@ void *run(void * arg) {
 		if (ros::Time::now() - last_inst > ros::Duration(2)) {
 			ROS_INFO("hover %d, %d", xx, yy);
 			try{
+				/*
 		    	listener.lookupTransform("/usb_cam", "/body_FLU", ros::Time(0), transform);
 		    	ROS_INFO("usb_cam --->  body_FLU");
 		    	ROS_INFO("transform.getBasis()");
@@ -66,17 +67,17 @@ void *run(void * arg) {
 		    	ROS_INFO("%f, %f, %f, %f", transform.getRotation().x(), transform.getRotation().y(),
 		    			 transform.getRotation().z(), transform.getRotation().w());
 		    	ROS_INFO("---------------");
-
-		    	listener.lookupTransform("/usb_cam", "/ground_ENU", ros::Time(0), transform);
+*/
+		    	listener.lookupTransform("/usb_cam", "/body_FLU", ros::Time(0), transform);
 		    	tf::Vector3 v_cam;
 		    	if (xx > 0) {
 		    		v_cam.setX(-1.0);
-		    	} else {
+		    	} else if (xx < 0) {
 		    		v_cam.setX(1.0);
 		    	}
 		    	if (yy > 0) {
 		    		v_cam.setY(-1.0);
-		    	} else {
+		    	} else if (yy < 0) {
 		    		v_cam.setY(1.0);
 		    	}
 
