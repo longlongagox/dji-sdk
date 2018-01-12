@@ -16,8 +16,8 @@
 ros::Time last_inst;
 ros::Subscriber flows;
 int xx, yy;
-const double EPS = 1e-2;
-const double velocity = 1.0;
+const double EPS = 1.0;
+const float velocity = 1.0;
 void DJISDKNode::flowsCallback(const opencv_apps::FlowArrayStamped::ConstPtr& msg) {
 	int size = msg->flow.size();
 	xx = yy = 0;
@@ -44,30 +44,6 @@ void *run(void * arg) {
 		if (ros::Time::now() - last_inst > ros::Duration(2)) {
 			ROS_INFO("hover %d, %d", xx, yy);
 			try{
-				/*
-		    	listener.lookupTransform("/usb_cam", "/body_FLU", ros::Time(0), transform);
-		    	ROS_INFO("usb_cam --->  body_FLU");
-		    	ROS_INFO("transform.getBasis()");
-		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[0].getX(), transform.getBasis()[0].getY(), transform.getBasis()[0].getZ());
-		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[1].getX(), transform.getBasis()[1].getY(), transform.getBasis()[1].getZ());
-		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[2].getX(), transform.getBasis()[2].getY(), transform.getBasis()[2].getZ());
-		    	ROS_INFO("----------------------------------");
-		    	ROS_INFO("transform.getRotation()");
-		    	ROS_INFO("%f, %f, %f, %f", transform.getRotation().x(), transform.getRotation().y(),
-		    			 transform.getRotation().z(), transform.getRotation().w());
-		    	ROS_INFO("---------------");
-		    	listener.lookupTransform("/body_FLU", "/ground_ENU", ros::Time(0), transform);
-		    	ROS_INFO("body_FLU --->  ground_ENU");
-		    	ROS_INFO("transform.getBasis()");
-		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[0].getX(), transform.getBasis()[0].getY(), transform.getBasis()[0].getZ());
-		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[1].getX(), transform.getBasis()[1].getY(), transform.getBasis()[1].getZ());
-		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[2].getX(), transform.getBasis()[2].getY(), transform.getBasis()[2].getZ());
-		    	ROS_INFO("----------------------------------");
-		    	ROS_INFO("transform.getRotation()");
-		    	ROS_INFO("%f, %f, %f, %f", transform.getRotation().x(), transform.getRotation().y(),
-		    			 transform.getRotation().z(), transform.getRotation().w());
-		    	ROS_INFO("---------------");
-*/
 		    	listener.lookupTransform("/usb_cam", "/body_FLU", ros::Time(0), transform);
 		    	tf::Vector3 v_cam;
 		    	if (xx > 0) {
@@ -102,16 +78,16 @@ void *run(void * arg) {
 		    	rotation.setZ(v_cam.getX()*transform.getBasis()[0].getZ()+v_cam.getY()*transform.getBasis()[1].getZ()
 		    			+v_cam.getZ()*transform.getBasis()[2].getZ());
 		    	ROS_INFO("velocity_cam: %f, %f, %f", v_cam.x(), v_cam.y(), v_cam.z());
-		    	ROS_INFO("velocity_rotation: %f, %f, %f", rotation.x(), rotation.y(), rotation.x());
+		    	ROS_INFO("velocity_rotation: %f, %f, %f", rotation.x(), rotation.y(), rotation.z());
 		    	uint8_t flag = (Control::VERTICAL_VELOCITY |
 				                  Control::HORIZONTAL_VELOCITY |
 				                  Control::YAW_RATE |
 				                  Control::HORIZONTAL_GROUND |
 				                  Control::STABLE_ENABLE);
-				float vx        = rotation.x();
-				float vy        = rotation.y();
-				float vz        = rotation.z();
-				float yawRate   = 0;
+				float vx        = rotation.x()*velocity;
+				float vy        = rotation.y()*velocity;
+				float vz        = rotation.z()*velocity;
+				float yawRate   = 0.0;
 
 			    node->flightControl(flag, vx, vy, vz, yawRate);
 
