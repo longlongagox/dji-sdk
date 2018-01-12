@@ -15,13 +15,18 @@
 
 ros::Time last_inst;
 ros::Subscriber flows;
-int xx, yy;
+pthread_mutex_t mutex;
+int xx, yy; //
 const double EPS = 1.0;
 const float velocity = 1.0;
 const int LIMIT = 50;
 
 void DJISDKNode::flowsCallback(const opencv_apps::FlowArrayStamped::ConstPtr& msg) {
 	int size = msg->flow.size();
+	if (pthread_mutex_lock(&mutex) != 0) {
+		ROS_ERROR("lock error!");
+		return ;
+	}
 	xx = yy = 0;
 	for (int i = 0; i < size; i++) {
 		if (msg->flow[i].velocity.x > EPS) {
@@ -35,6 +40,7 @@ void DJISDKNode::flowsCallback(const opencv_apps::FlowArrayStamped::ConstPtr& ms
 			yy--;
 		}
 	}
+	pthread_mutex_unlock(&mutex);
 }
 
 void *run(void * arg) {
@@ -44,8 +50,12 @@ void *run(void * arg) {
 	tf::StampedTransform transform;
 	while(1) {
 		if (ros::Time::now() - last_inst > ros::Duration(2)) {
-			ROS_INFO("hover %d, %d", xx, yy);
 			try{
+				if (pthread_mutex_lock(&mutex) != 0) {
+					ROS_ERROR("lock error!");
+					return (void*)NULL;
+				}
+				ROS_INFO("hover %d, %d", xx, yy);
 		    	listener.lookupTransform("/usb_cam", "/body_FLU", ros::Time(0), transform);
 		    	tf::Vector3 v_cam(0, 0, 0);
 		    	if (xx > LIMIT) {
@@ -58,6 +68,7 @@ void *run(void * arg) {
 		    	} else if (yy < -LIMIT) {
 		    		v_cam.setY(1.0);
 		    	}
+		    	pthread_mutex_unlock(&mutex);
 
 		    	ROS_INFO("transform.getBasis()");
 		    	ROS_INFO("%f\t%f\t%f", transform.getBasis()[0].getX(), transform.getBasis()[0].getY(), transform.getBasis()[0].getZ());
@@ -104,7 +115,10 @@ void *run(void * arg) {
 }
 void DJISDKNode::hover(ros::NodeHandle& nh) {
 	last_inst = ros::Time::now();
-	ROS_INFO("set last %s", __func__);
+	if (pthread_mutex_init(&mutex, NULL) != 0) {
+		ROS_ERROR("Init mutex error!!");
+		exit(1);
+	}
 	flows = nh.subscribe<opencv_apps::FlowArrayStamped>("/simple_flow/flows", 10, &DJISDKNode::flowsCallback, this);
 	pthread_t th;
 	pthread_create(&th, NULL, run, this);
